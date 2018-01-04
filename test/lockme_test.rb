@@ -2,9 +2,14 @@ require 'test_helper'
 require 'logger'
 
 describe Lockme do
+  before do
+    Lockme.api_key = nil
+    Lockme.api_secret = nil
+  end
+
   describe "#test" do
     it 'performs a GET request to /test' do
-      Lockme::Request.stub(:perform, ->(method, path, *args) { return [method, path] }) do
+      Lockme::SignedRequest.stub(:perform, ->(method, path, *args) { return [method, path] }) do
         assert_equal(Lockme.test, ['get', "/test"])
       end
     end
@@ -13,16 +18,16 @@ describe Lockme do
   describe "api_key accessors" do
     it 'sets and returns api key' do
       assert_nil Lockme.api_key
-      Lockme.api_key = 'asdf'
-      assert_equal Lockme.api_key, 'asdf'
+      Lockme.api_key = '9f37c75740e1a46086d137a29995ab2cf24fd209'
+      assert_equal Lockme.api_key, '9f37c75740e1a46086d137a29995ab2cf24fd209'
     end
   end
 
   describe "api_secret accessors" do
     it 'sets and returns api secret' do
       assert_nil Lockme.api_secret
-      Lockme.api_secret = 'qwerty'
-      assert_equal Lockme.api_secret, 'qwerty'
+      Lockme.api_secret = '270eb10242509cf591067410b425971c6d47339e'
+      assert_equal Lockme.api_secret, '270eb10242509cf591067410b425971c6d47339e'
     end
   end
 

@@ -1,13 +1,14 @@
 module Lockme
-  module Request
+  module SignedRequest
     def self.perform(method, path, data = nil)
       headers = signature(method, path, data)
       params = {
         body: data,
         headers: headers,
         debug_output: Lockme.logger
-      }.compact
-      resp = SignedRequest.send(method.downcase, path, params).parsed_response
+      }.delete_if {|k,v| k.nil? || v.nil? }
+
+      resp = Request.send(method.downcase, path, params).parsed_response
       if resp.is_a?(Hash) && resp['error']
         raise Lockme::Error.new(resp['error'])
       end
@@ -20,9 +21,9 @@ module Lockme
       digest = Digest::SHA1.hexdigest([
         method.upcase,
         path.gsub(/^\//, ''),
-        data || '[]',
+        data,
         Lockme.api_secret
-      ].join(''))
+      ].compact.join(''))
 
       {
         'Partner-Key' => Lockme.api_key,
@@ -35,7 +36,7 @@ module Lockme
     end
   end
 
-  module SignedRequest
+  module Request
     include ::HTTParty
 
     HEADERS = {
@@ -43,7 +44,7 @@ module Lockme
       'Accept'        => 'application/json',
       'Content-Type'  => 'application/json'
     }
-    API_VERSION = '1.0'
+    API_VERSION = '1.1'
 
     base_uri "https://lockme.pl/api/v#{API_VERSION}/"
     headers HEADERS
@@ -52,5 +53,4 @@ module Lockme
     extend Forwardable
     def_delegators 'self.class', :delete, :get, :post, :put
   end
-  private_constant :SignedRequest
 end

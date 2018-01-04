@@ -5,7 +5,7 @@ module Lockme
     end
 
     def self.find(lockme_id)
-      self.new(Lockme::Request.perform("get", "/reservation/#{lockme_id}"))
+      self.new(Lockme::SignedRequest.perform("get", "/reservation/#{lockme_id}"))
     end
 
     def save
@@ -17,7 +17,7 @@ module Lockme
     end
 
     def destroy
-      Lockme::Request.perform("delete", "/reservation/#{@data.reservationid}")
+      Lockme::SignedRequest.perform("delete", "/reservation/#{@data.reservationid}")
     end
 
     # Check if object is persisted with Lockme
@@ -31,12 +31,12 @@ module Lockme
     end
 
     def create
-      Lockme::Request.perform("put", "/reservation", self.to_json)
+      Lockme::SignedRequest.perform("put", "/reservation", self.to_json)
     end
     private :create
 
     def update
-      Lockme::Request.perform("post", "/reservation/#{@data.reservationid}", self.to_json)
+      Lockme::SignedRequest.perform("post", "/reservation/#{@data.reservationid}", self.to_json)
     end
     private :update
   end

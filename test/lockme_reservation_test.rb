@@ -34,7 +34,7 @@ describe Lockme::Reservation do
   describe "find" do
     it 'performs a GET request and returns a Reservation object' do
       lockme_id = 2753586
-      Lockme::Request.stub(:perform, ->(method, path) { return { reservationid: 746269 } }) do
+      Lockme::SignedRequest.stub(:perform, ->(method, path) { return { reservationid: 746269 } }) do
         obj = Lockme::Reservation.find(lockme_id)
         assert_instance_of(Lockme::Reservation, obj)
         assert_equal(obj.reservationid, 746269)
@@ -45,7 +45,7 @@ describe Lockme::Reservation do
   describe "#destroy" do
     it 'performs a DELETE request' do
       lockme_id = 2753586
-      Lockme::Request.stub(:perform, ->(method, path) { return [method, path] }) do
+      Lockme::SignedRequest.stub(:perform, ->(method, path) { return [method, path] }) do
         resp = Lockme::Reservation.new(reservationid: lockme_id).destroy
         assert_equal(resp, ['delete', "/reservation/#{lockme_id}"])
       end
@@ -55,7 +55,7 @@ describe Lockme::Reservation do
   describe "#create" do
     it 'performs a PUT request' do
       lockme_id = 2753586
-      Lockme::Request.stub(:perform, ->(method, path, *args) { return [method, path] }) do
+      Lockme::SignedRequest.stub(:perform, ->(method, path, *args) { return [method, path] }) do
         resp = Lockme::Reservation.new(reservationid: lockme_id).send :create
         assert_equal(resp, ['put', "/reservation"])
       end
@@ -65,7 +65,7 @@ describe Lockme::Reservation do
   describe "#update" do
     it 'performs a POST request' do
       lockme_id = 2753586
-      Lockme::Request.stub(:perform, ->(method, path, *args) { return [method, path] }) do
+      Lockme::SignedRequest.stub(:perform, ->(method, path, *args) { return [method, path] }) do
         resp = Lockme::Reservation.new(reservationid: lockme_id).send :update
         assert_equal(resp, ['post', "/reservation/#{lockme_id}"])
       end
