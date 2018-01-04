@@ -1,7 +1,7 @@
 module Lockme
-  class Reservation
+  class Reservation < Lockme::Base
     def initialize(args = {})
-      @data = args
+      @data = OpenStruct.new(args)
     end
 
     def self.find(lockme_id)
@@ -9,7 +9,7 @@ module Lockme
     end
 
     def save
-      if(@data[:lockme_id].present?)
+      if persisted?
         update
       else
         create
@@ -17,7 +17,17 @@ module Lockme
     end
 
     def destroy
-      Lockme::Request.perform("delete", "/reservation/#{@data[:id]}")
+      Lockme::Request.perform("delete", "/reservation/#{@data.reservationid}")
+    end
+
+    # Check if object is persisted with Lockme
+    def persisted?
+      !@data.reservationid.nil?
+    end
+
+    # Provide attribute accessors
+    def method_missing(method, *args)  
+      @data.send method, *args
     end
 
     def create
@@ -26,7 +36,7 @@ module Lockme
     private :create
 
     def update
-      Lockme::Request.perform("post", "/reservation/#{self.id}", self.to_json)
+      Lockme::Request.perform("post", "/reservation/#{@data.reservationid}", self.to_json)
     end
     private :update
   end
