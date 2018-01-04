@@ -1,5 +1,10 @@
 # Lockme
 
+[![Build Status](https://travis-ci.org/hajder/lockme.svg?branch=master)](https://travis-ci.org/hajder/lockme)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d14d98a40a58ca93238a/maintainability)](https://codeclimate.com/github/hajder/lockme/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d14d98a40a58ca93238a/test_coverage)](https://codeclimate.com/github/hajder/lockme/test_coverage)
+[![Gem](https://img.shields.io/gem/v/lockme.svg)](https://rubygems.org/gems/lockme)
+
 Lockme is a Ruby gem to interact with [lockme.pl](https://lockme.pl) API.
 
 ## Installation
