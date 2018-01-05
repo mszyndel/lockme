@@ -1,0 +1,25 @@
+AllCops:
+  Exclude:
+    - examples/*
+    - '*'
+    - bin/*
+
+Style/StringLiterals:
+  Enabled: false
+Style/StringLiteralsInInterpolation:
+  Enabled: false
+Style/PreferredHashMethods:
+  EnforcedStyle: verbose
+Style/NumericLiterals:
+  Exclude:
+    - test/*_test.rb
+Metrics/BlockLength:
+  Exclude:
+    - test/*_test.rb
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - test/*_test.rb
+Metrics/LineLength:
+  Exclude:
+    - test/*_test.rb
+

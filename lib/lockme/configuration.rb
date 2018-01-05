@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
+#:nodoc:
 module Lockme
+  # Mixin providing gem configuration options methods
   module Configuration
     def api_key
       defined?(@api_key) ? @api_key : nil

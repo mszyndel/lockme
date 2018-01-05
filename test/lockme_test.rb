@@ -9,7 +9,7 @@ describe Lockme do
 
   describe "#test" do
     it 'performs a GET request to /test' do
-      Lockme::SignedRequest.stub(:perform, ->(method, path, *args) { return [method, path] }) do
+      Lockme::SignedRequest.stub(:perform, ->(*args) { return args }) do
         assert_equal(Lockme.test, ['get', "/test"])
       end
     end
