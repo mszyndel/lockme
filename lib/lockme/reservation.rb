@@ -1,7 +1,7 @@
 module Lockme
   class Reservation < Lockme::Base
     def initialize(args = {})
-      @data = OpenStruct.new(args)
+      parse_lockme_json(args)
     end
 
     def self.find(lockme_id)
@@ -31,13 +31,21 @@ module Lockme
     end
 
     def create
-      Lockme::SignedRequest.perform("put", "/reservation", self.to_json)
+      @data.reservationid = Lockme::SignedRequest.perform("put", "/reservation", self.to_json)
+      return self
     end
     private :create
 
     def update
-      Lockme::SignedRequest.perform("post", "/reservation/#{@data.reservationid}", self.to_json)
+      resp = Lockme::SignedRequest.perform("post", "/reservation/#{@data.reservationid}", self.to_json)
+      parse_lockme_json(resp)
+      return self
     end
     private :update
+
+    def parse_lockme_json(data)
+      @data = OpenStruct.new(data)
+    end
+    private :parse_lockme_json
   end
 end

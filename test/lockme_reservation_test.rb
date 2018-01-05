@@ -57,7 +57,8 @@ describe Lockme::Reservation do
       lockme_id = 2753586
       Lockme::SignedRequest.stub(:perform, ->(method, path, *args) { return [method, path] }) do
         resp = Lockme::Reservation.new(reservationid: lockme_id).send :create
-        assert_equal(resp, ['put', "/reservation"])
+        assert_instance_of(Lockme::Reservation, resp)
+        assert_equal(resp.reservationid, ['put', "/reservation"])
       end
     end
   end
@@ -65,9 +66,10 @@ describe Lockme::Reservation do
   describe "#update" do
     it 'performs a POST request' do
       lockme_id = 2753586
-      Lockme::SignedRequest.stub(:perform, ->(method, path, *args) { return [method, path] }) do
+      Lockme::SignedRequest.stub(:perform, ->(method, path, *args) { return { reservationid: [method, path] } }) do
         resp = Lockme::Reservation.new(reservationid: lockme_id).send :update
-        assert_equal(resp, ['post', "/reservation/#{lockme_id}"])
+        assert_instance_of(Lockme::Reservation, resp)
+        assert_equal(resp.reservationid, ['post', "/reservation/#{lockme_id}"])
       end
     end
   end
