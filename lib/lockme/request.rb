@@ -4,12 +4,7 @@ module Lockme
   # API request module providing argument processing and signing
   module SignedRequest
     def self.perform(method, path, data = nil)
-      headers = signature(method.upcase, path.gsub(%r{^\/}, ''), data)
-      params = {
-        body: data,
-        headers: headers,
-        debug_output: Lockme.logger
-      }.delete_if { |k, v| k.nil? || v.nil? }
+      params = prepare_params(method, path, data)
 
       resp = Request.send(method.downcase, path, params).parsed_response
       if resp.is_a?(Hash) && resp.has_key?('error')
@@ -21,15 +16,24 @@ module Lockme
     end
 
     def self.signature(*args)
-      sha1 = Digest::SHA1.hexdigest([
+      digest = Digest::SHA1.hexdigest([
         *args,
         Lockme.api_secret
       ].compact.join(''))
 
       {
         'Partner-Key' => Lockme.api_key,
-        'Signature'   => sha1
+        'Signature'   => digest
       }
+    end
+
+    def self.prepare_params(method, path, data)
+      headers = signature(method.upcase, path.gsub(%r{^\/}, ''), data)
+      {
+        body: data,
+        headers: headers,
+        debug_output: Lockme.logger
+      }.delete_if { |key, val| key.nil? || val.nil? }
     end
   end
 
