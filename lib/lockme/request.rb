@@ -1,7 +1,7 @@
 module Lockme
   module SignedRequest
     def self.perform(method, path, data = nil)
-      headers = signature(method, path, data)
+      headers = signature(method.upcase, path.gsub(/^\//, ''), data)
       params = {
         body: data,
         headers: headers,
@@ -17,22 +17,16 @@ module Lockme
       raise Lockme::Error.new('Invalid response from the server')
     end
 
-    def self.signature(method, path, data)
-      digest = Digest::SHA1.hexdigest([
-        method.upcase,
-        path.gsub(/^\//, ''),
-        data,
+    def self.signature(*args)
+      sha1 = Digest::SHA1.hexdigest([
+        *args,
         Lockme.api_secret
       ].compact.join(''))
 
       {
         'Partner-Key' => Lockme.api_key,
-        'Signature'   => digest
+        'Signature'   => sha1
       }
-    end
-
-    class << self
-      private :signature
     end
   end
 
