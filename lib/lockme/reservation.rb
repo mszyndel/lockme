@@ -3,12 +3,18 @@
 module Lockme
   # LockMe API reservation object
   class Reservation < Lockme::Base
+    @base_path = '/reservation'
+
     def initialize(args = {})
       parse_lockme_json(args)
     end
 
+    def id
+      reservationid
+    end
+
     def self.find(lockme_id)
-      new(Lockme::SignedRequest.perform("get", "/reservation/#{lockme_id}"))
+      new(SignedRequest.perform("get", singular_path(lockme_id)))
     end
 
     def save
@@ -20,12 +26,7 @@ module Lockme
     end
 
     def destroy
-      Lockme::SignedRequest.perform("delete", "/reservation/#{reservationid}")
-    end
-
-    # Check if object is persisted with Lockme
-    def persisted?
-      !@data.reservationid.nil?
+      SignedRequest.perform("delete", singular_path)
     end
 
     # Provide attribute accessors
@@ -34,13 +35,14 @@ module Lockme
     end
 
     def create
-      @data.reservationid = Lockme::SignedRequest.perform("put", "/reservation", to_json)
+      resp = SignedRequest.perform("put", collection_path, to_json)
+      @data.reservationid = resp
       self
     end
     private :create
 
     def update
-      resp = Lockme::SignedRequest.perform("post", "/reservation/#{reservationid}", to_json)
+      resp = SignedRequest.perform("post", singular_path, to_json)
       parse_lockme_json(resp)
       self
     end
