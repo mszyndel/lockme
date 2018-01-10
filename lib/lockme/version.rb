@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Lockme
-  VERSION = "0.4.1"
+  VERSION = "1.1.0"
 end
